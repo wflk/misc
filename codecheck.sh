@@ -6,7 +6,7 @@
 #
 # usage: sudo find / -perm +111 -type f -exec ./codecheck.sh {} \;
 
-authinfo=`/usr/bin/codesign -d -vv $1 2>&1`
+authinfo=`/usr/bin/codesign -d -vv "$*" 2>&1`
 valid=0
 
 case "$authinfo" in
@@ -35,12 +35,12 @@ if [[ $valid != 1 ]]
 then
     if [[ $valid == -1 ]]
     then
-        echo "$1: code object is not signed at all"
+        echo "$*: code object is not signed at all"
     fi
 
     if [[ $valid == 0 ]]
     then
-        echo "$1: invalid or non-apple code signature: $authinfo"
+        echo "$*: invalid or non-apple code signature: $authinfo"
         echo
         echo
     fi

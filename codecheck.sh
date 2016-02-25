@@ -5,7 +5,8 @@
 # <jonathan@zdziarski.com>
 #
 # usage: sudo find -x / -perm +111 -type f -exec ./codecheck.sh -d {} \;
-#     remove -d flag to warn on developer certificates
+#   remove -d flag to warn on developer certificates
+#   for less noise, omit /Applications and other such paths
 
 filename=$1
 allowdevcerts=0
@@ -67,10 +68,10 @@ esac
 
 if [[ $valid != 1 ]]
 then
-    if [[ $valid == -1 ]]
-    then
-        echo "$filename: code object is not signed at all"
-    fi
+#    if [[ $valid == -1 ]]
+#    then
+#        echo "$filename: code object is not signed at all"
+#    fi
 
     if [[ $valid == 0 ]]
     then

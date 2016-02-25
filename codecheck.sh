@@ -4,9 +4,18 @@
 # explicitly signed by Apple
 # <jonathan@zdziarski.com>
 #
-# usage: sudo find / -perm +111 -type f -exec ./codecheck.sh {} \;
+# usage: sudo find / -perm +111 -type f -exec ./codecheck.sh -d {} \;
+#     remove -d flag to warn on developer certificates
 
-authinfo=`/usr/bin/codesign -d -vv "$*" 2>&1`
+filename=$1
+allowdevcerts=0
+if [[ $filename == "-d" ]]
+then
+    filename=$2
+    allowdevcerts=1
+fi
+
+authinfo=`/usr/bin/codesign -d -vv "$filename" 2>&1`
 valid=0
 
 case "$authinfo" in
@@ -18,6 +27,19 @@ case "$authinfo" in
     esac
   ;;
 esac
+
+if [[ $allowdevcerts == 1 ]]
+then
+    case "$authinfo" in
+      *"Authority=Developer ID Certification Authority"*)
+    case "$authinfo" in
+      *"Authority=Apple Root CA"*)
+        valid=1
+    ;;
+    esac
+  ;;
+  esac
+fi
 
 case "$authinfo" in
   *": code object is not signed at all"*)
@@ -35,12 +57,12 @@ if [[ $valid != 1 ]]
 then
     if [[ $valid == -1 ]]
     then
-        echo "$*: code object is not signed at all"
+        echo "$filename: code object is not signed at all"
     fi
 
     if [[ $valid == 0 ]]
     then
-        echo "$*: invalid or non-apple code signature: $authinfo"
+        echo "$filename: invalid or non-apple code signature: $authinfo"
         echo
         echo
     fi

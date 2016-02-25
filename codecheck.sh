@@ -30,6 +30,8 @@ fi
 authinfo=`/usr/bin/codesign -d -vv "$filename" 2>&1`
 valid=0
 
+echo $exitcode
+
 case "$authinfo" in
   *"Authority=Apple Code Signing Certification Authority"*)
     case "$authinfo" in
@@ -74,8 +76,14 @@ then
 
     if [[ $valid == 0 ]]
     then
+        echo
         echo "$filename: invalid or non-apple code signature: $authinfo"
-        echo
-        echo
     fi
 fi
+
+verify=`/usr/bin/codesign -v "$filename" 2>&1`
+if [[ $? != 0 ]]
+then
+  echo "$filename: codesign failed: $verify"
+fi
+

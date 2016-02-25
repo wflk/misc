@@ -30,8 +30,6 @@ fi
 authinfo=`/usr/bin/codesign -d -vv "$filename" 2>&1`
 valid=0
 
-echo $exitcode
-
 case "$authinfo" in
   *"Authority=Apple Code Signing Certification Authority"*)
     case "$authinfo" in

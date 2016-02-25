@@ -4,7 +4,7 @@
 # explicitly signed by Apple
 # <jonathan@zdziarski.com>
 #
-# usage: sudo find / -perm +111 -type f -exec ./codecheck.sh -d {} \;
+# usage: sudo find -x / -perm +111 -type f -exec ./codecheck.sh -d {} \;
 #     remove -d flag to warn on developer certificates
 
 filename=$1

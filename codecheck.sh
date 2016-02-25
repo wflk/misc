@@ -15,6 +15,18 @@ then
     allowdevcerts=1
 fi
 
+macho=0
+magic=`/usr/bin/file "$filename" 2>&1`
+case "$magic" in
+  *"Mach-O"*)
+    macho=1
+;;
+esac
+if [[ $macho == 0 ]]
+then
+    exit
+fi
+
 authinfo=`/usr/bin/codesign -d -vv "$filename" 2>&1`
 valid=0
 
